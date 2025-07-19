@@ -112,20 +112,29 @@ const AdminPanel = () => {
     setIsEditMode(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Yakin hapus layanan ini?")) return;
-    try {
-      const res = await fetch(`${apiUrl}/delete_layanan.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      });
-      await res.text();
+ const handleDelete = async (id) => {
+  if (!window.confirm("Yakin hapus layanan ini?")) return;
+  try {
+    const res = await fetch(`${apiUrl}/delete_layanan.php`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
       fetchLayanan();
-    } catch (err) {
-      console.error("Gagal hapus:", err);
+    } else {
+      alert("Gagal hapus: " + (result.message || result.error));
     }
-  };
+  } catch (err) {
+    console.error("Gagal hapus:", err);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-6 lg:p-8">
